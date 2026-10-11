@@ -1,0 +1,59 @@
+{
+  "name": "stencil-ruby-output-target",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Stencil output target that generates Ruby: ViewComponents and reactive partials (Herb-validated ERB), RBS, Lookbook previews and a FormBuilder, plus a TypeScript bridge for ReActionView.",
+  "type": "module",
+  "license": "MIT",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "require": "./dist/index.cjs",
+      "default": "./src/index.ts"
+    },
+    "./runtime": "./runtime/stencil-bridge.ts"
+  },
+  "files": [
+    "src/",
+    "dist/",
+    "runtime/",
+    "README.md"
+  ],
+  "scripts": {
+    "preview": "node src/cli.ts",
+    "typecheck": "tsc -p tsconfig.json",
+    "test": "node --test test/generator.test.ts",
+    "build": "esbuild src/index.ts --bundle --platform=node --format=cjs --packages=external --outfile=dist/index.cjs --define:import.meta.url=__importMetaUrl --banner:js=\"const __importMetaUrl = require('node:url').pathToFileURL(__filename).href;\""
+  },
+  "peerDependencies": {
+    "@stencil/core": "^4.45.2"
+  },
+  "peerDependenciesMeta": {
+    "@herb-tools/node": {
+      "optional": true
+    },
+    "@herb-tools/node-wasm": {
+      "optional": true
+    },
+    "@herb-tools/client": {
+      "optional": true
+    }
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild"
+    ]
+  },
+  "engines": {
+    "node": ">=22.18.0"
+  },
+  "devDependencies": {
+    "@herb-tools/client": "0.11.0",
+    "@herb-tools/node-wasm": "0.11.0",
+    "@stencil/core": "^4.45.2",
+    "@types/node": "22.20.5",
+    "esbuild": "0.28.2",
+    "playwright": "^1.64.0",
+    "typescript": "5.9.3"
+  }
+}
