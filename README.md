@@ -43,13 +43,13 @@ The target runs after Stencil's lazy build, in the same build. To generate witho
 
 ```sh
 # One package:
-node src/cli.ts --docs <package>/docs/documentation.json --root <package> --out /tmp/gem
+npx stencil-ruby-output-target --docs <package>/docs/documentation.json --root <package> --out /tmp/gem
 
 # Several packages into one gem:
-node src/cli.ts --package <package> --package <another> --out /tmp/gem
+npx stencil-ruby-output-target --package <package> --package <another> --out /tmp/gem
 
 # The targets a config file declares (its default export is a list of options), all or one:
-node src/cli.ts --package <package> --config <package>/ruby.config.ts [--framework sinatra] [--out /tmp/gems]
+npx stencil-ruby-output-target --package <package> --config <package>/ruby.config.ts [--framework sinatra] [--out /tmp/gems]
 ```
 
 It needs Node 22.18 or newer. Templates are validated with [Herb](https://herb-tools.dev) when `@herb-tools/node-wasm` or `@herb-tools/node` is installed.
@@ -394,10 +394,21 @@ The bridge (`app/javascript/…/stencil-bridge.ts`) registers the `data-stencil-
 pnpm install
 pnpm test        # the generator's tests
 pnpm typecheck
-pnpm build       # dist/index.cjs, which Stencil's config loader requires
+pnpm build       # dist/: ESM, CommonJS (Stencil's config loader requires it), the CLI and the types
+pnpm cli --help  # the CLI from source
 ```
 
-The source runs on Node with no build step (type stripping): imports carry `.ts` extensions and only erasable TypeScript syntax is used.
+The source runs on Node with no build step (type stripping): imports carry `.ts` extensions and only erasable TypeScript syntax is used. The package ships `dist/`, because Node won't strip types from files inside `node_modules`.
+
+### Releasing
+
+```sh
+npm login                          # once
+pnpm release 0.1.0 --dry-run       # the checks, the build, the tarball and npm publish --dry-run; changes nothing
+pnpm release 0.1.0                 # or patch, minor, major
+```
+
+`scripts/release.mjs` checks the tree is clean and on `main` and that the version is new, then runs the typecheck, the tests and the build. It checks the tarball's contents and that the built entry points load, publishes to npm, and then commits the version, tags it `v<version>` and pushes both when the repository has a remote. A prerelease (`0.2.0-next.0`) goes out under the `next` dist-tag. Other flags: `--tag <name>`, `--otp <code>`, `--no-push`, `--any-branch`.
 
 ## License
 

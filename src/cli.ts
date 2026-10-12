@@ -30,13 +30,32 @@ const { values } = parseArgs({
     exclude: { type: 'string', multiple: true },
     config: { type: 'string' },
     framework: { type: 'string' },
+    help: { type: 'boolean', short: 'h' },
   },
 });
 
+const USAGE = `stencil-ruby-output-target: generate the Ruby gem from built docs-json, without a Stencil build
+
+  stencil-ruby-output-target --docs <documentation.json> [--root <stencil package>] --out <dir>
+  stencil-ruby-output-target --package <stencil package>... --out <dir>
+  stencil-ruby-output-target --package <stencil package> --config <targets module> [--framework <name>] [--out <dir>]
+
+  --docs <file>        a docs-json file (Stencil's docs-json output target)
+  --root <dir>         the Stencil package it came from (default: the file's directory)
+  --package <dir>      a built Stencil package (its docs/documentation.json); repeatable
+  --out <dir>          where the gem goes; with --config, each target goes into <dir>/<its outDir's name>
+  --config <module>    a module whose default export is a list of rubyOutputTarget() options
+  --framework <name>   with --config, only the target for rails, sinatra or bridgetown
+  --exclude <tag>      a tag to skip; repeatable
+  -h, --help           this text`;
+
+if (values.help) {
+  console.log(USAGE);
+  process.exit(0);
+}
+
 if ((!values.docs && !values.package) || (!values.out && !values.config)) {
-  console.error(
-    'usage: node src/cli.ts (--docs <documentation.json> [--root <stencil package>] | --package <stencil package>...) (--out <dir> | --config <targets module> [--out <dir>]) [--exclude <tag>...]',
-  );
+  console.error(USAGE);
   process.exit(2);
 }
 

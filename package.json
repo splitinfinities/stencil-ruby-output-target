@@ -1,29 +1,51 @@
 {
   "name": "stencil-ruby-output-target",
   "version": "0.0.0",
-  "private": true,
-  "description": "Stencil output target that generates Ruby: ViewComponents and reactive partials (Herb-validated ERB), RBS, Lookbook previews and a FormBuilder, plus a TypeScript bridge for ReActionView.",
+  "description": "Stencil output target that generates a Ruby gem from your web components: ViewComponents, helpers, a FormBuilder, head tags with preloads, RBS and tests, for Rails, Sinatra or Bridgetown.",
+  "keywords": [
+    "stencil",
+    "stenciljs",
+    "output-target",
+    "ruby",
+    "rails",
+    "view_component",
+    "sinatra",
+    "bridgetown",
+    "web-components"
+  ],
   "type": "module",
   "license": "MIT",
   "exports": {
     ".": {
-      "types": "./src/index.ts",
-      "require": "./dist/index.cjs",
-      "default": "./src/index.ts"
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
     },
-    "./runtime": "./runtime/stencil-bridge.ts"
+    "./runtime": "./runtime/stencil-bridge.ts",
+    "./package.json": "./package.json"
+  },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/types/index.d.ts",
+  "bin": {
+    "stencil-ruby-output-target": "dist/cli.js"
   },
   "files": [
-    "src/",
     "dist/",
     "runtime/",
-    "README.md"
+    "README.md",
+    "LICENSE"
   ],
   "scripts": {
-    "preview": "node src/cli.ts",
+    "cli": "node src/cli.ts",
     "typecheck": "tsc -p tsconfig.json",
     "test": "node --test test/generator.test.ts",
-    "build": "esbuild src/index.ts --bundle --platform=node --format=cjs --packages=external --outfile=dist/index.cjs --define:import.meta.url=__importMetaUrl --banner:js=\"const __importMetaUrl = require('node:url').pathToFileURL(__filename).href;\""
+    "build": "node scripts/build.mjs",
+    "prepublishOnly": "pnpm typecheck && pnpm test && pnpm build",
+    "release": "node scripts/release.mjs"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "peerDependencies": {
     "@stencil/core": "^4.45.2"
