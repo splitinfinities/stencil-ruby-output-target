@@ -1,6 +1,6 @@
 {
   "name": "stencil-ruby-output-target",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Stencil output target that generates a Ruby gem from your web components: ViewComponents, helpers, a FormBuilder, head tags with preloads, RBS and tests, for Rails, Sinatra or Bridgetown.",
   "keywords": [
     "stencil",
